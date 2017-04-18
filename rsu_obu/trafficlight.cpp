@@ -15,7 +15,7 @@ SpatLightState ColorIntToEnum(int color)
     }
 }
 
-TrafficLight SpatDecode(const std::vector<uint8_t> &data)
+TrafficLight SpatDecode(const std::vector<char> &data)
 {
     std::cout<<"spat Decode"<<std::endl;
     TrafficLight result;

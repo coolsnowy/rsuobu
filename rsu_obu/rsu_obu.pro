@@ -292,11 +292,8 @@ SOURCES += \
     J2735/YawRateConfidence.c \
     udp10001.cpp \
     lib_json/json_writer.cpp \
-    lib_json/json_valueiterator.inl \
     lib_json/json_value.cpp \
-    lib_json/json_reader.cpp \
-    lib_json/json_internalmap.inl \
-    lib_json/json_internalarray.inl
+    lib_json/json_reader.cpp
 
 HEADERS += \
     bsm.h \
@@ -604,8 +601,6 @@ HEADERS += \
 #    J2735/DSRC_R36_Source.ASN
 
 DISTFILES += \
-    lib_json/sconscript \
-    Makefile \
     J2735/YawRateConfidence.h.gch \
     J2735/YawRate.h.gch \
     J2735/xer_support.h.gch \
@@ -890,17 +885,6 @@ DISTFILES += \
     J2735/AccelerationSet4Way.h.gch \
     J2735/AccelerationConfidence.h.gch \
     J2735/Acceleration.h.gch \
-    J2735/libJ2735.a \
-    J2735/DSRC_R36_Source.ASN \
-    ini.json \
-    4843: \
-    4842: \
-    4841: \
-    4840: \
-    4839: \
-    4835: \
-    4833: \
-    4832: \
     udp10001.d \
     trafficlight.d \
     package.d \

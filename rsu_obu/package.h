@@ -12,12 +12,10 @@
 #define MAXSIZE 100
 using namespace std;
 
-void type_distinguish(char recv_buf[], const std::vector<uint8_t> recv_vector,uint8_t buf[],uint8_t *frametype);
-
-
-void bsmpack(BsmBlob blob,uint8_t buf[]);
-void spatpack(TrafficLight light,uint8_t buf[]);
-void mappack(Map map,uint8_t buf[]);
+void type_distinguish(char recv_buf[], const std::vector<char> recv_vector,char buf[],char *frametype);
+void bsmpack(BsmBlob blob,char buf[]);
+void spatpack(TrafficLight light,char buf[]);
+void mappack(Map map,char buf[]);
 
 #endif
 

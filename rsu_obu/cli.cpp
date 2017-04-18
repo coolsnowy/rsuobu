@@ -50,42 +50,22 @@ bool tcp_client::Connect(const char *ipaddress, int destport)
 
 	return true;
 }
-bool tcp_client::send_data(uint8_t *send_buf,size_t len)
+bool tcp_client::send_data(char *send_buf,size_t len)
 {
-    // modifed
-//    fd_set rset;
-//    FD_ZERO(&rset);
-//    int nready;
-//    int maxfd = sock_fd;
-//    while(1)
-//    {
-//        FD_SET(sock_fd,&rset);
-//        nready = select(maxfd+1,&rset,NULL,NULL,NULL);
-//        if(nready == -1){
-//            cout<<"select error"<<endl;
-//            break;
-//        }
-//        if(nready == 0)
-//                continue;
-//        if(FD_ISSET(sock_fd,&rset)){
-                int send_num;
-                send_num = send(sock_fd, send_buf,len, 0);
-                if (send_num < 0)
-                {
-                    perror("send error:");
-                    exit(1);
-                }
-                else
-                    cout<<"send success"<<endl;
-     //           }
-   // }
-   // close(sock_fd);
-	return true;
-
+    int send_num;
+    send_num = send(sock_fd, send_buf,len, 0);
+    if (send_num < 0)
+    {
+          perror("send error:");
+          exit(1);
+    }
+    else
+          cout<<"send success"<<endl;
+    return true;
 }
-uint8_t* tcp_client::recv_data(int recv_num)
+char* tcp_client::recv_data(int recv_num)
 {
-    uint8_t recv_buf[MAX];
+    char recv_buf[MAX];
 	recv_num = recv(sock_fd, recv_buf, sizeof(recv_buf), 0);
 	if (recv_num < 0)
 	{

@@ -39,8 +39,8 @@ private:
 
 public:
         bool Connect(const char *ipaddress, int destport);
-        bool send_data(uint8_t *send_buf,size_t len);
-        uint8_t* recv_data(int recv_num);
+        bool send_data(char *send_buf,size_t len);
+        char* recv_data(int recv_num);
         void Close();
 
 };
@@ -50,10 +50,10 @@ private:
 		struct sockaddr_in server_addr, client_addr;
 		int sock_fd;
 		int connfd;
-        uint8_t buf[MAX];
+        char buf[MAX];
 public:
         bool Listen(char *serv_port);
-        uint8_t *tcp_recv();
+        char *tcp_recv();
 		void Close();
 };
 

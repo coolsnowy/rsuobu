@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void type_distinguish(char recv_buf[], const std::vector<uint8_t> recv_vector,uint8_t buf[],uint8_t *frametype)
+void type_distinguish(char recv_buf[], const std::vector<char> recv_vector,char buf[],char *frametype)
 {
     extern BsmBlob bsm;
     memset(&bsm,0,sizeof(bsm));
@@ -18,11 +18,15 @@ void type_distinguish(char recv_buf[], const std::vector<uint8_t> recv_vector,ui
     cout<<"start distinguish"<<endl;
     switch (recv_buf[5])
     {
+
     case 2:
         cout<<"BSM message\n";
+        for(int i=0;i<strlen(recv_buf);i++)
+            printf("%x ",recv_buf[i]);
         bsmpack(BsmDecode(recv_vector),buf);
         *frametype = 0x01;
         break;
+
     case 13:
         cout<<"SPAT message\n";
         cout<<"content";
@@ -41,11 +45,13 @@ void type_distinguish(char recv_buf[], const std::vector<uint8_t> recv_vector,ui
     }
     switch (recv_buf[4])
     {
+
     case 2:
         cout<<"BSM message\n";
          bsmpack(BsmDecode(recv_vector),buf);
         *frametype = 0x01;
         break;
+
     case 13:
         cout<<"SPAT message\n";
         cout<<"content";
@@ -64,7 +70,7 @@ void type_distinguish(char recv_buf[], const std::vector<uint8_t> recv_vector,ui
 
     }
 }
-void  bsmpack(BsmBlob blob,uint8_t buf[])
+void  bsmpack(BsmBlob blob,char buf[])
 {
     cout<<"start bsmpack\n";
     int32_t carId = blob.carId;
@@ -84,68 +90,75 @@ void  bsmpack(BsmBlob blob,uint8_t buf[])
     int32_t newwheelAngle = (int32_t) round(wheelAngle / 1.5);
     int16_t newacceleration = (int16_t) round(acceleration * 100);
 
-    //big endian
-	//carid (0 - 3)
-	buf[3] = newcarID & 0xFF;
-	buf[2] = (newcarID & 0xFF00) >> 8;
-	buf[1] = (newcarID & 0xFF0000) >> 16;
-	buf[0] = (newcarID & 0xFF000000) >> 24;
+    //carID
+    int j=0;
+    j = sprintf(buf+j, "%d",newcarID);
+    j += sprintf(buf+j,"%c",',');
 
-	//latitude (4 - 7)
-	if (newlatitude > 900000000 || newlatitude < -900000000) //range: -900000000 ~ 900000000,unavailable:900000001
-	{
-		newlatitude = 900000001;
-	}
-	buf[7] = newlatitude & 0xFF;
-	buf[6] = (newlatitude & 0xFF00) >> 8;
-	buf[5] = (newlatitude & 0xFF0000) >> 16;
-	buf[4] = (newlatitude & 0xFF000000) >> 24;
+    //latitude (4 - 7)
+    if (newlatitude > 900000000 || newlatitude < -900000000) //range: -900000000 ~ 900000000,unavailable:900000001
+    {
+        newlatitude = 900000001;
+    }
 
-	//longitude (8 - 11)
-	if (newlongitude > 1800000000 || newlongitude < -1800000000) //range: -1800000000 ~ 1800000000,unavailable:1800000001
-	{
-		newlongitude = 1800000001;
-	}
-	buf[11] = newlongitude & 0xFF;
-	buf[10] = (newlongitude & 0xFF00) >> 8;
-	buf[9] = (newlongitude & 0xFF0000) >> 16;
-	buf[8] = (newlongitude & 0xFF000000) >> 24;
-	//speed (12 - 13)                //range: 0 ~ 8192
-	buf[13] = newspeed & 0xFF;
-	buf[12] = (newspeed & 0x1F00) >> 8;
-	//Heading (14 - 15)
-	if (newheading < 0 || newheading > 28799) //range:0 ~ 28799,unavailable:28800
-	{
-		newheading = 28800;
-	}
-	buf[15] = newheading & 0xFF;
-	buf[14] = (newheading & 0xFF00) >> 8;
-	//wheelangle (16)
-	if (newwheelAngle < -126 || newwheelAngle > 126) //range: -126 ~ 126,unavailable:127
-	{
-		newwheelAngle = 127;
-	}
-	buf[16] = newwheelAngle & 0xFF;
-	//acceleration(17 - 18)
-	if (newacceleration < 0 || newacceleration > 5000)
-	{
-		newacceleration = -1;
-	}
-	buf[18] = newacceleration & 0xFF;
-	buf[17] = (newacceleration & 0xFF00) >> 8;
-	//carBrake(19)
-	buf[19] = carBrake & 0xFF;
-	time_t t;
-	time(&t);
-	buf[23] = t & 0xFF;
-	buf[22] = (t & 0xFF00) >> 8;
-	buf[21] = (t & 0xFF0000) >> 16;
-	buf[20] = (t & 0xFF000000) >> 24;
-    buf[24] = ',';
+    j += sprintf(buf+j, "%d",newlatitude);
+    j += sprintf(buf+j,"%c",',');
+
+    //longitude (8 - 11)
+    if (newlongitude > 1800000000 || newlongitude < -1800000000) //range: -1800000000 ~ 1800000000,unavailable:1800000001
+    {
+        newlongitude = 1800000001;
+    }
+    j += sprintf(buf+j, "%d",newlongitude);
+    j += sprintf(buf+j,"%c",',');
+
+    //speed
+    j += sprintf(buf+j, "%d",newspeed);
+    j += sprintf(buf+j,"%c",',');
+
+    //Heading (14 - 15)
+    if (newheading < 0 || newheading > 28799) //range:0 ~ 28799,unavailable:28800
+    {
+        newheading = 28800;
+    }
+    j += sprintf(buf+j, "%d",newheading);
+    j += sprintf(buf+j,"%c",',');
+
+    //wheelangle (16)
+    if (newwheelAngle < -126 || newwheelAngle > 126) //range: -126 ~ 126,unavailable:127
+    {
+        newwheelAngle = 127;
+    }
+
+    j += sprintf(buf+j, "%d",newwheelAngle);
+    j += sprintf(buf+j,"%c",',');
+    //acceleration(17 - 18)
+    if (newacceleration < 0 || newacceleration > 5000)
+    {
+        newacceleration = -1;
+    }
+    j += sprintf(buf+j, "%d",newacceleration);
+    j += sprintf(buf+j,"%c",',');
+
+    //carBrake(19)
+    j += sprintf(buf+j, "%d",carBrake);
+    j += sprintf(buf+j,"%c",',');
+
+    time_t t;
+    time(&t);
+    cout<<"buf"<<buf<<endl;
+  //j += sprintf(buf+j,"%c",'\0');
+
+    short int len=0 ;
+    while(*buf != ',' || *(buf+1))
+    {
+        len++;
+        buf++;
+    }
+    len++;
     cout<<"BSM message package suceess\n";
-    cout<<"buf[24]"<<buf[24]<<endl;
 }
-void spatpack(TrafficLight light,uint8_t buf[])
+void spatpack(TrafficLight light,char buf[])
 {
 
     int32_t newmapId = light.mapId;
@@ -253,7 +266,7 @@ void spatpack(TrafficLight light,uint8_t buf[])
 
     *++buf = ',';
 }
-void mappack(Map map,uint8_t buf[])
+void mappack(Map map,char buf[])
 {
     list<Lane>::size_type lane_num ;
     lane_num= map.lanes.size();

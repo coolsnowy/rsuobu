@@ -17,7 +17,7 @@ struct BsmBlob
     double acceleration;
 };
 
-std::vector<uint8_t> BsmEncode(const BsmBlob &data);
-BsmBlob BsmDecode(const std::vector<uint8_t> &data);
+std::vector<char> BsmEncode(const BsmBlob &data);
+BsmBlob BsmDecode(const std::vector<char> &data);
 
 #endif

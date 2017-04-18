@@ -47,12 +47,12 @@ int main(int argc, char **argv)
     ifstream in;
     in.open("/home/skymooon/workspace/Qt/rsu_obu/ini.json", ios::binary);
     if( !in.is_open() )
-      {
-      cout << "Error opening file\n";
-      return 0;
-      }
+    {
+        cout << "Error opening file\n";
+        return 0;
+    }
     if(reader.parse(in,root))
-       {
+    {
         string s1 = root["RecvPort"].asString();
         RecvPort= s1.c_str();
         cout<<"Recv Port is "<<RecvPort<<endl;
@@ -64,14 +64,14 @@ int main(int argc, char **argv)
         ServPort = s3.c_str();
 
         cout<<"Serv Port is "<<ServPort<<endl;
-       cout << "Reading Complete!" << endl;
-       }
-       else
-       {
-       cout << "parse error\n" << endl;
-       }
+        cout << "Reading Complete!" << endl;
+    }
+    else
+    {
+        cout << "parse error\n" << endl;
+    }
 
-       in.close();
+    in.close();
     int port = atoi(ServPort);
 	struct timeval timeout;
 	timeout.tv_sec = 5;
@@ -79,7 +79,8 @@ int main(int argc, char **argv)
 	int sock_fd, connfd = 0, sockfd;
 	int maxfd, maxi = -1, nready = 0, i = 0;
 	int client[MAXSELECT];
-	/* socket文件描述符 */
+
+    /* socket文件描述符 */
 	char addr_p[INET_ADDRSTRLEN];
 	fd_set allset, readfds;
 	int addr_len;
@@ -87,7 +88,7 @@ int main(int argc, char **argv)
 	int recv_num;
 	int send_num;
 	char recv_buf[MAXLINE];
-	vector<uint8_t> recv_vector;
+    vector<char> recv_vector;
 	static int n = 1;
 	struct sockaddr_in addr_serv, addr_cli;
 
@@ -97,7 +98,7 @@ int main(int argc, char **argv)
         printf("SErV_PORt error! Usage: %s Portnumber\n", RecvPort);
 		exit(1);
 	}
-   // cout<<"Serv Port"<<SERV_PORT<<endl;
+    // cout<<"Serv Port"<<SERV_PORT<<endl;
 	if ((sock_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
 		perror("socket error");
@@ -116,7 +117,8 @@ int main(int argc, char **argv)
 	bzero(&addr_cli.sin_zero, 8);
 	if (bind(sock_fd, (struct sockaddr *) &addr_serv, sizeof(addr_serv)) < 0)
 	{
-		perror("bind error:");
+
+        perror("bind error:here");
 		exit(1);
 	}
 	maxfd = sock_fd;
@@ -128,22 +130,24 @@ int main(int argc, char **argv)
     tcp_client tcpclient;
     tcpclient.Connect(ServIP,port);
 
-    uint8_t frametype;
+    char frametype;
     frametype = 0x00;
 
 	while (1)
 	{
-        recv_vector.clear(); // it is important
+        // it is so important
+        recv_vector.clear();
         memset(recv_buf,0,MAXLINE);
 		printf("\n\n");
 		timeout.tv_sec = 5;
 		timeout.tv_usec = 0;
 		printf("\nserver wait:\n");
-		d1: readfds = allset; //得到当前可以读的文件描述符数目
+        d1: readfds = allset;
+        //get the number of fd we can obtain present
 		nready = select(maxfd + 1, &readfds, NULL, NULL, &timeout);
 		if (FD_ISSET(sock_fd, &readfds))
 		{
-            /*再次检查是否有可读的套接字，若没有，则继续等待下一个就绪套接字*/
+            // check if any socket to read again, if not any, continue waiting the next socket
 			if (nready <= 0)
 				continue;
 			nready--;
@@ -151,9 +155,10 @@ int main(int argc, char **argv)
 			inet_ntop(AF_INET, &addr_cli.sin_addr, addr_p, sizeof(addr_p));
 			printf("client IP is %s,port is %d\n", addr_p,
 					ntohs(addr_cli.sin_port));
-			//打印客户端地址和端口号
-			for (i = 0; i < MAXSELECT; i++) /*将新的客户加入客户数组*/
+            //print the address and port of client
+            for (i = 0; i < MAXSELECT; i++)
 			{
+                 // add new client to the client array
 				if (client[i] < 0)
 				{
 					client[i] = connfd;
@@ -166,19 +171,21 @@ int main(int argc, char **argv)
 				printf("Too many clients, server stopped!\n");
 				exit(1);
 			}
-			FD_SET(connfd, &readfds); /*将这个新连接的套接字添加至描述符集*/
-			if (connfd > maxfd) /*更新描述符集中的最大值*/
+            FD_SET(connfd, &readfds);
+            // add the new socket to the set of fd
+            if (connfd > maxfd)
+            //update tha max num of the set of fd
 				maxfd = connfd;
 			if (i > maxi)
-				maxi = i; /*记录当前最大客户数*/
+                maxi = i; //max num of client
 			for (i = 0; i <= maxi; i++)
 			{
-				if ((sockfd = client[i]) < 0) /*无效的客户记录*/
+                if ((sockfd = client[i]) < 0) // invalid client
 				{
 					printf("client invalid");
 					continue;
 				}
-				if (FD_ISSET(sockfd, &readfds)) /*判断是否有套接字可读*/
+                if (FD_ISSET(sockfd, &readfds)) //judge if any socketfd to read
 				{
 
 					printf("have socket to read!\n");
@@ -200,7 +207,7 @@ int main(int argc, char **argv)
                     cout<<"recv vector size="<<recv_vector.size()<<endl;
                     // send
                     cout<<"type distinguish\n";
-                    uint8_t *buf = new uint8_t[1000];
+                    char *buf = new char[1000];
                     memset(buf,0,1000);
                     type_distinguish(recv_buf,recv_vector,buf,&frametype);
                     // frame
@@ -214,7 +221,7 @@ int main(int argc, char **argv)
                     buf_i++;
                     cout<<"buf len="<<buf_i;
 
-                    uint8_t *framebuf = new uint8_t[1000];
+                    char *framebuf = new char[1000];
                     memset(framebuf,0,1000);
                     framestruct(framebuf,&frametype,buf_i,buf); //donot have crc32
                     int32_t framelen=0 ;
@@ -222,17 +229,12 @@ int main(int argc, char **argv)
                         framelen++;
                     framelen++;
                     cout<<"frame length="<<framelen<<endl;
-
-
                     tcpclient.send_data(framebuf,framelen);
                     memset(buf,0,sizeof(buf));
                     memset(framebuf,0,sizeof(framebuf));
                     delete []buf;
                     delete []framebuf;
-
-
-
-					if (nready <= 0)
+                    if (nready <= 0)
 						break;
 				}
 			}

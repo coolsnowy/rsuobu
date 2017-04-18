@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <list>
-
 #include "SPAT.h"
 
 enum SpatLightState
@@ -34,7 +33,7 @@ struct TrafficLight
     std::list<SpatMovementState> states;
 };
 
-TrafficLight SpatDecode(const std::vector<uint8_t> &data);
+TrafficLight SpatDecode(const std::vector<char> &data);
 #endif
 
 

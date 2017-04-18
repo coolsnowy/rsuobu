@@ -2,7 +2,7 @@
 #include<iostream>
 using namespace std;
 
-std::vector<uint8_t> BsmEncode(const BsmBlob &data)
+std::vector<char> BsmEncode(const BsmBlob &data)
 {
     int32_t carId = data.carId;
     int32_t latitude  = static_cast<int32_t>(data.latitude*10000000);
@@ -73,13 +73,13 @@ std::vector<uint8_t> BsmEncode(const BsmBlob &data)
     ::asn_DEF_BasicSafetyMessage.free_struct(&::asn_DEF_BasicSafetyMessage, bsm, 0);
 
     if(er.encoded != -1) {
-        return std::vector<uint8_t>(message, message+er.encoded);
+        return std::vector<char>(message, message+er.encoded);
     }else {
-        return std::vector<uint8_t>();
+        return std::vector<char>();
     }
 }
 
-BsmBlob BsmDecode(const std::vector<uint8_t> &data)
+BsmBlob BsmDecode(const std::vector<char> &data)
 {
     cout<<"BSM Decode\n";
     struct BasicSafetyMessage *bsm = NULL;

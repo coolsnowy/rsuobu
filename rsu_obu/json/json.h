@@ -7,4 +7,8 @@
 # include "writer.h"
 # include "features.h"
 
+#include "forwards.h"
+# include "config.h"
+
+
 #endif // JSON_JSON_H_INCLUDED

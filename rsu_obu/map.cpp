@@ -3,7 +3,7 @@
 #include <iostream>
 #include "map.h"
 using namespace std;
-Map MapDecode(const std::vector<uint8_t> &data)
+Map MapDecode(const std::vector<char> &data)
 {
     Map result;
 

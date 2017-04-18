@@ -1,6 +1,6 @@
 #include "frame.h"
 using namespace std;
-void framestruct(uint8_t framebuf[],uint8_t *FrameType,int32_t Length,uint8_t buf[])
+void framestruct(char framebuf[],char *FrameType,int32_t Length,char buf[])
 {
 	char Head[2] = { 0x59, 0x5A };
 	//1 frame begin with 0x595A

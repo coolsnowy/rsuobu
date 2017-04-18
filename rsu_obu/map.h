@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <list>
-
 #include <stdint.h>
 
 struct Point
@@ -25,6 +24,6 @@ struct Map
     std::list<Lane> lanes;  // List of lanes
 };
 
-Map MapDecode(const std::vector<uint8_t> &data);
+Map MapDecode(const std::vector<char> &data);
 
 #endif
